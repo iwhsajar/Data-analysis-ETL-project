@@ -1,0 +1,41 @@
+ #!/bin/bash
+
+# STEP1:Checking for the input and passing file name as argument
+if [ $# -lt 1 ]; then
+  echo "Running file as : $0 file_name"
+  exit 1
+fi
+
+filenm="$1"
+
+# Step2: Reading header of the file and getting th columns
+IFS=';' read -r -a headers <<< "$(head -n 1 "$filenm")"
+number_columns=${#headers[@]}
+
+# step3: Writing the header to the temporary file
+for i in $(seq 1 $number_columns); do
+  echo "${headers[$((i - 1))]}"
+done > .headers_tempe
+
+# Step 4. Counting the empty cells by looping over
+awk -F';' -v columns="$number_columns" '
+NR > 1 {
+  for (i = 1; i <= columns; i++) {
+    gsub(/^[ \t]+|[ \t]+$/, "", $i)
+    if ($i == "") empty[i]++
+  }
+}
+END {
+  for (i = 1; i <= columns; i++) {
+    print empty[i] + 0  # default to 0 if not set
+  }
+}
+' "$filenm" > .counts_tempe
+
+# Step 5: Printing the results of the empty cells
+paste -d: .headers_tempe .counts_tempe
+
+# step 6:Removing the temporary file as a clean up
+rm -f .headers_tempe .counts_tempe
+
+
