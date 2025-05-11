@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# ---------------------------------------------------------------
+# Preparing our raw data to for further analysis
+# Tasks:
+#   1. Converting semicolon separator to the tab 
+#   2.  Converting the ending like microsoft to unix type
+#   3. Changing comma to dot in decimal point
+#   4. Removing the unnecessary character that are not ASCII
+#   5. Providing new ID for the empty ID 
+# ---------------------------------------------------------------
+
+# Step1: Taking one arguments as file 
+if [ $# -ne 1 ]; then
+  echo "Running file as: $0 <filenm>" >&2
+  exit 1
+fi
+
+filenm="$1"
+
+#Step2: Here we make sure if the file exist or not
+if [ ! -s "$filenm" ]; then
+  echo "Alert! The '$filenm' you provided doesn’t exist or is empty" >&2
+  exit 1
+fi
+
+# Step 3: We find the highest Id number to generate other new ID with incrementt
+max_existing_id=$(awk -F';' 'NR > 1 && $1 ~ /^[0-9]+$/ && $1 > maximum { maximum = $1 } END { print maximum + 0 }' "$filenm")
+next_available_id=$((max_existing_id + 1))
+
+#Step 4: Here we clean the files
+{
+  # Treating the file like separately as header
+  read -r header
+  IFS=';' read -ra columns <<< "$header"
+  total_columns=${#columns[@]}
+  (IFS=$'\t'; echo "${columns[*]}")
+
+  # Now processing rest of the rows
+  while IFS= read -r line || [ -n "$line" ]; do
+    [[ -z "$line" ]] && continue
+
+    #Fixing any window style ending 
+    line="${line//$'\r'/}"
+
+    # Diving each row into the field using semicolons
+    IFS=';' read -ra data_fields <<< "$line"
+
+    # Incase ID is missing we will assign new id after the highest one
+    if [[ -z "${data_fields[0]// }" ]]; then
+      data_fields[0]=$next_available_id
+      ((next_available_id++))
+    fi
+
+    #Running the loop to clean each column values
+    for ((i = 0; i < total_columns; i++)); do
+      value="${data_fields[i]}"
+      # Change comma to dot if its between numeric value
+      value=$(echo "$value" | sed -E 's/([0-9]),([0-9])/\1.\2/g')
+      # Any special character or non Ascii character is removed
+      value=$(echo "$value" | tr -cd '\11\12\15\40-\176')
+      data_fields[i]="$value"
+    done
+
+    # checking is row has all the column required
+    for ((i = ${#data_fields[@]}; i < total_columns; i++)); do
+      data_fields[i]=""
+    done
+
+    # Finally printing the clean rows.
+    (IFS=$'\t'; echo "${data_fields[*]}")
+  done
+} < "$filenm"
+
+
