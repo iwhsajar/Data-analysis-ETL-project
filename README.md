@@ -1,14 +1,13 @@
 
-# Open Tools scripting assignment : CITS4407
+# Data Quality & Analysis Project 
 
+**Author:** Rajashwi Shrestha
 
-**Author:** Rajashwi Shrestha  
-**Student ID:** 23929591  
-**Unit:** CITS4407 – Open Tool Scripting
+---
 
-## Overview
+## Project Overview
 
-This repository contain three bash script , each has single purpose. It process and analyse board Games Geek dataset from kaggle. The main Task are:
+This project demonstrates  **ability to manage, clean, and analyze large datasets** using Bash scripting and Unix/Linux tools. It simulates real-world data workflows, emphasizing **data quality, preprocessing, and actionable analysis**. This repository contain three bash script , each has single purpose. It process and analyse board Games Geek dataset from kaggle. The main Task are:
 
 ### 1.Checking Data quality : By handling empty cells
 
@@ -27,27 +26,81 @@ Here we idebntify the empty field or missing values in the dataset and print the
  - What is the correlation between publication year and average rating, e.g. newer games being preferred over older ones.
  - What is the correlation between game complexity and average rating.
 
+Key highlights:
+
+* Identifying and handling missing or inconsistent data
+* Automating data cleaning and preprocessing pipelines
+* Analyzing patterns, trends, and correlations in datasets
+* Generating insights that support informed business decisions
+
+---
+
+## Core Features
+
+### 1. Data Quality Check (`empty_cells`)
+
+* Detects missing values across dataset columns
+* Summarizes data completeness to ensure integrity before analysis
+
+### 2. Data Cleaning (`preprocess`)
+
+* Converts semicolons (`;`) to tab-delimited format for database readiness
+* Standardizes line endings and numeric formats
+* Removes non-ASCII characters for consistent data
+* Generates unique IDs for missing entries
+
+### 3. Data Analysis (`analysis`)
+
+* Identifies most popular game domains and mechanics
+* Computes correlations: publication year vs. average rating, and complexity vs. rating
+* Produces actionable insights for dataset-driven decision-making
+
+---
+
+## Skills Demonstrated
+
+* Data integrity checks and quality assessment
+* ETL-style preprocessing with Bash and Unix tools
+* Data analysis and correlation studies
+* Problem-solving and automation with real-world datasets
+* SQL and database concepts understanding (applied in preparing clean, tabular data)
+
+---
+
 ## How to Use
-Firstly we need to make sure script are executable.
+
+Make scripts executable:
 
 ```bash
 chmod +x empty_cells preprocess analysis
 ```
 
-Then we can simply run the script with the dataset.For example taking sample.txt
+**Step 1 – Check data quality**
 
 ```bash
 ./empty_cells sample.txt
 ```
 
-Data preprocessing the dataset
+**Step 2 – Clean the dataset**
 
 ```bash
 ./preprocess sample.txt > sample.tsv
 ```
 
-Analysis the dataset.
+**Step 3 – Analyze the dataset**
 
 ```bash
 ./analysis sample.tsv
 ```
+
+---
+
+## Outcome
+
+Through this project, I successfully demonstrated my ability to:
+
+* Ensure **data accuracy and integrity** in messy datasets
+* Implement **data preprocessing pipelines** similar to ETL processes
+* Extract **meaningful insights** to inform strategic decisions
+* Handle complex datasets efficiently, preparing them for further **analysis or visualization**
+
